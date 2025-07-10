@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gurudham Family Restaurant & Bar - Menu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .restaurant-name {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2c3e50;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .category {
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .category.hidden {
+            display: none;
+        }
+
+        .category-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .category-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        .dishes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .dish-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .dish-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .dish-card.hidden {
+            display: none;
+        }
+
+        .dish-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #bbb;
+        }
+
+        .dish-info {
+            padding: 20px;
+        }
+
+        .dish-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .dish-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            flex: 1;
+        }
+
+        .veg-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 10px;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+
+        .veg {
+            background-color: #27ae60;
+        }
+
+        .non-veg {
+            background-color: #e74c3c;
+        }
+
+        .dish-description {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .dish-price {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #e67e22;
+        }
+
+        .no-dishes {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .restaurant-name {
+                font-size: 2rem;
+            }
+
+            .category-title {
+                font-size: 1.5rem;
+            }
+
+            .dishes-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .filter-buttons {
+                gap: 10px;
+            }
+
+            .filter-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .category {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .restaurant-name {
+                font-size: 1.7rem;
+            }
+
+            .header {
+                padding: 20px 15px;
+            }
+
+            .dish-info {
+                padding: 15px;
+            }
+
+            .dish-name {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="restaurant-name">GURUDHAM FAMILY RESTAURANT AND BAR</h1>
+            <p class="subtitle">Authentic Flavors, Family Traditions</p>
+        </div>
+
+        <div class="filter-buttons">
+            <button class="filter-btn active" onclick="filterDishes('all')">All Dishes</button>
+            <button class="filter-btn" onclick="filterDishes('veg')">Vegetarian</button>
+            <button class="filter-btn" onclick="filterDishes('non-veg')">Non-Vegetarian</button>
+        </div>
+
+        <div id="menu-container">
+            <div class="category" data-category="starters">
+                <h2 class="category-title">Starters</h2>
+                <div class="dishes-grid">
+                    <div class="dish-card" data-type="veg">
+                        <div class="dish-image">🥗</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Paneer Tikka</h3>
+                                <div class="veg-indicator veg"></div>
+                            </div>
+                            <p class="dish-description">Grilled cottage cheese cubes marinated in aromatic spices and
+                                yogurt, served with mint chutney</p>
+                            <div class="dish-price">₹180</div>
+                        </div>
+                    </div>
+
+                    <div class="dish-card" data-type="non-veg">
+                        <div class="dish-image">🍗</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Chicken Tikka</h3>
+                                <div class="veg-indicator non-veg"></div>
+                            </div>
+                            <p class="dish-description">Tender chicken pieces marinated in traditional spices and
+                                grilled to perfection</p>
+                            <div class="dish-price">₹220</div>
+                        </div>
+                    </div>
+
+                    <div class="dish-card" data-type="veg">
+                        <div class="dish-image">🥟</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Veg Samosa</h3>
+                                <div class="veg-indicator veg"></div>
+                            </div>
+                            <p class="dish-description">Crispy pastry filled with spiced potatoes, peas, and aromatic
+                                herbs</p>
+                            <div class="dish-price">₹60</div>
+                        </div>
+                    </div>
+
+                    <div class="dish-card" data-type="non-veg">
+                        <div class="dish-image">🍤</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Prawn Fry</h3>
+                                <div class="veg-indicator non-veg"></div>
+                            </div>
+                            <p class="dish-description">Fresh prawns marinated in coastal spices and pan-fried to golden
+                                perfection</p>
+                            <div class="dish-price">₹280</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category" data-category="main-course">
+                <h2 class="category-title">Main Course</h2>
+                <div class="dishes-grid">
+                    <div class="dish-card" data-type="veg">
+                        <div class="dish-image">🍛</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Dal Makhani</h3>
+                                <div class="veg-indicator veg"></div>
+                            </div>
+                            <p class="dish-description">Creamy black lentils slow-cooked with butter, cream, and
+                                aromatic spices</p>
+                            <div class="dish-price">₹160</div>
+                        </div>
+                    </div>
+
+                    <div class="dish-card" data-type="non-veg">
+                        <div class="dish-image">🍖</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Butter Chicken</h3>
+                                <div class="veg-indicator non-veg"></div>
+                            </div>
+                            <p class="dish-description">Tender chicken in rich tomato-based gravy with cream and
+                                aromatic spices</p>
+                            <div class="dish-price">₹280</div>
+                        </div>
+                    </div>
+
+                    <div class="dish-card" data-type="veg">
+                        <div class="dish-image">🥘</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Paneer Butter Masala</h3>
+                                <div class="veg-indicator veg"></div>
+                            </div>
+                            <p class="dish-description">Cottage cheese cubes in creamy tomato gravy with Indian spices
+                            </p>
+                            <div class="dish-price">₹200</div>
+                        </div>
+                    </div>
+
+                    <div class="dish-card" data-type="non-veg">
+                        <div class="dish-image">🐟</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Fish Curry</h3>
+                                <div class="veg-indicator non-veg"></div>
+                            </div>
+                            <p class="dish-description">Fresh fish cooked in coconut-based curry with traditional
+                                coastal spices</p>
+                            <div class="dish-price">₹320</div>
+                        </div>
+                    </div>
+
+                    <div class="dish-card" data-type="veg">
+                        <div class="dish-image">🍚</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Veg Biryani</h3>
+                                <div class="veg-indicator veg"></div>
+                            </div>
+                            <p class="dish-description">Fragrant basmati rice layered with mixed vegetables and aromatic
+                                spices</p>
+                            <div class="dish-price">₹180</div>
+                        </div>
+                    </div>
+
+                    <div class="dish-card" data-type="non-veg">
+                        <div class="dish-image">🍗</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Chicken Biryani</h3>
+                                <div class="veg-indicator non-veg"></div>
+                            </div>
+                            <p class="dish-description">Aromatic basmati rice layered with tender chicken and
+                                traditional spices</p>
+                            <div class="dish-price">₹250</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category" data-category="drinks">
+                <h2 class="category-title">Drinks & Beverages</h2>
+                <div class="dishes-grid">
+                    <div class="dish-card" data-type="veg">
+                        <div class="dish-image">🥤</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Fresh Lime Soda</h3>
+                                <div class="veg-indicator veg"></div>
+                            </div>
+                            <p class="dish-description">Refreshing lime juice with soda water and a hint of mint</p>
+                            <div class="dish-price">₹80</div>
+                        </div>
+                    </div>
+
+                    <div class="dish-card" data-type="veg">
+                        <div class="dish-image">🥛</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Mango Lassi</h3>
+                                <div class="veg-indicator veg"></div>
+                            </div>
+                            <p class="dish-description">Creamy yogurt-based drink blended with fresh mango pulp</p>
+                            <div class="dish-price">₹120</div>
+                        </div>
+                    </div>
+
+                    <div class="dish-card" data-type="veg">
+                        <div class="dish-image">🍵</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Masala Chai</h3>
+                                <div class="veg-indicator veg"></div>
+                            </div>
+                            <p class="dish-description">Traditional Indian tea brewed with aromatic spices and milk</p>
+                            <div class="dish-price">₹40</div>
+                        </div>
+                    </div>
+
+                    <div class="dish-card" data-type="veg">
+                        <div class="dish-image">🧃</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Fresh Fruit Juice</h3>
+                                <div class="veg-indicator veg"></div>
+                            </div>
+                            <p class="dish-description">Seasonal fresh fruit juices - Orange, Apple, Pomegranate</p>
+                            <div class="dish-price">₹100</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category" data-category="desserts">
+                <h2 class="category-title">Desserts</h2>
+                <div class="dishes-grid">
+                    <div class="dish-card" data-type="veg">
+                        <div class="dish-image">🍮</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Gulab Jamun</h3>
+                                <div class="veg-indicator veg"></div>
+                            </div>
+                            <p class="dish-description">Soft milk dumplings soaked in rose-flavored sugar syrup</p>
+                            <div class="dish-price">₹80</div>
+                        </div>
+                    </div>
+
+                    <div class="dish-card" data-type="veg">
+                        <div class="dish-image">🍨</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Kulfi</h3>
+                                <div class="veg-indicator veg"></div>
+                            </div>
+                            <p class="dish-description">Traditional Indian ice cream made with milk, cardamom, and
+                                pistachios</p>
+                            <div class="dish-price">₹90</div>
+                        </div>
+                    </div>
+
+                    <div class="dish-card" data-type="veg">
+                        <div class="dish-image">🥧</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Ras Malai</h3>
+                                <div class="veg-indicator veg"></div>
+                            </div>
+                            <p class="dish-description">Soft cottage cheese dumplings in sweetened milk with cardamom
+                            </p>
+                            <div class="dish-price">₹100</div>
+                        </div>
+                    </div>
+
+                    <div class="dish-card" data-type="veg">
+                        <div class="dish-image">🍯</div>
+                        <div class="dish-info">
+                            <div class="dish-header">
+                                <h3 class="dish-name">Gajar Halwa</h3>
+                                <div class="veg-indicator veg"></div>
+                            </div>
+                            <p class="dish-description">Traditional carrot pudding cooked with milk, ghee, and nuts</p>
+                            <div class="dish-price">₹110</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="no-dishes-message" class="no-dishes" style="display: none;">
+            <h3>No dishes found for the selected filter</h3>
+            <p>Try selecting a different filter to see more options</p>
+        </div>
+    </div>
+
+    <script>
+        let currentFilter = 'all';
+
+        function filterDishes(type) {
+            currentFilter = type;
+
+            // Update active button
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Filter dishes
+            const dishes = document.querySelectorAll('.dish-card');
+            const categories = document.querySelectorAll('.category');
+            let hasVisibleDishes = false;
+
+            categories.forEach(category => {
+                const categoryDishes = category.querySelectorAll('.dish-card');
+                let categoryHasVisibleDishes = false;
+
+                categoryDishes.forEach(dish => {
+                    const dishType = dish.getAttribute('data-type');
+
+                    if (type === 'all' || dishType === type) {
+                        dish.classList.remove('hidden');
+                        categoryHasVisibleDishes = true;
+                        hasVisibleDishes = true;
+                    } else {
+                        dish.classList.add('hidden');
+                    }
+                });
+
+                // Hide category if no dishes are visible
+                if (categoryHasVisibleDishes) {
+                    category.classList.remove('hidden');
+                } else {
+                    category.classList.add('hidden');
+                }
+            });
+
+            // Show/hide no dishes message
+            const noDishesMessage = document.getElementById('no-dishes-message');
+            if (hasVisibleDishes) {
+                noDishesMessage.style.display = 'none';
+            } else {
+                noDishesMessage.style.display = 'block';
+            }
+        }
+
+        // Add smooth scrolling and animations
+        document.addEventListener('DOMContentLoaded', function () {
+            const dishCards = document.querySelectorAll('.dish-card');
+
+            // Add stagger animation to dish cards
+            dishCards.forEach((card, index) => {
+                card.style.animationDelay = ${ index * 0.1 } s;
+            });
+
+            // Add intersection observer for scroll animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            dishCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+
+</html>
